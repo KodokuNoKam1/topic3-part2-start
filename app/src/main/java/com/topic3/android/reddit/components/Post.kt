@@ -1,5 +1,4 @@
 package com.topic3.android.reddit.components
-
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,14 +25,12 @@ import androidx.compose.ui.unit.sp
 import com.topic3.android.reddit.R
 import com.topic3.android.reddit.domain.model.PostModel
 import com.topic3.android.reddit.domain.model.PostModel.Companion.DEFAULT_POST
-
 @Composable
 fun TextPost(post: PostModel) {
   Post(post) {
     TextContent(post.text)
   }
 }
-
 @Composable
 fun ImagePost(post: PostModel) {
   Post(post) {
@@ -44,18 +41,55 @@ fun ImagePost(post: PostModel) {
 @Composable
 fun Post(post: PostModel, content: @Composable () -> Unit = {}) {
   //TODO add your code here
+  Card(shape = MaterialTheme.shapes.large) {
+    Column(
+      modifier = Modifier.
+      padding(
+        top = 8.dp,
+        bottom = 8.dp
+      )
+    ) {
+      Header(post)
+      Spacer(modifier = Modifier.height(4.dp))
+      content.invoke()
+      Spacer(modifier = Modifier.height(8.dp))
+      PostActions(post)
+    }
+  }
+
 }
 
 @Composable
 fun Header(post: PostModel) {
-  //TODO add your code here
+  Row(modifier = Modifier.padding(start = 16.dp)) {
+    Image(
+      ImageBitmap.imageResource(id = R.drawable.subreddit_placeholder),
+      contentDescription = stringResource(id = R.string.subreddits),
+      Modifier
+        .size(40.dp)
+        .clip(CircleShape)
+    )
+    Spacer(modifier = Modifier.width(8.dp))
+    Column(modifier = Modifier.weight(1f)) {
+      Text(text = stringResource(R.string.subreddit_header,
+        post.subreddit),
+        fontWeight = FontWeight.Medium,
+        color = MaterialTheme.colors.primaryVariant
+      )
+      Text(text = stringResource(R.string.post_header,
+        post.username, post.postedTime
+      ),
+        color = Color.Gray
+      )
+    }
+    MoreActionsMenu()
+  }
+  Title(text = post.title)
 }
-
 @Composable
 fun MoreActionsMenu() {
   var expanded by remember { mutableStateOf(false) }
   Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
-
     IconButton(onClick = { expanded = true }) {
       Icon(
         imageVector = Icons.Default.MoreVert,
@@ -63,7 +97,6 @@ fun MoreActionsMenu() {
         contentDescription = stringResource(id = R.string.more_actions)
       )
     }
-
     DropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false }
@@ -75,7 +108,6 @@ fun MoreActionsMenu() {
     }
   }
 }
-
 @Composable
 fun CustomDropdownMenuItem(
   @DrawableRes vectorResourceId: Int,
@@ -95,7 +127,6 @@ fun CustomDropdownMenuItem(
     }
   }
 }
-
 @Composable
 fun Title(text: String) {
   Text(
@@ -107,7 +138,6 @@ fun Title(text: String) {
     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
   )
 }
-
 @Composable
 fun TextContent(text: String) {
   Text(
@@ -121,7 +151,6 @@ fun TextContent(text: String) {
     maxLines = 3
   )
 }
-
 @Composable
 fun ImageContent(image: Int) {
   val imageAsset = ImageBitmap.imageResource(id = image)
@@ -134,7 +163,6 @@ fun ImageContent(image: Int) {
     contentScale = ContentScale.Crop
   )
 }
-
 @Composable
 fun PostActions(post: PostModel) {
   Row(
@@ -162,21 +190,35 @@ fun PostActions(post: PostModel) {
     )
   }
 }
-
 @Composable
 fun VotingAction(
   text: String,
   onUpVoteAction: () -> Unit,
   onDownVoteAction: () -> Unit
 ) {
-  //TODO add your code here
+  Row(verticalAlignment = Alignment.CenterVertically){
+    ArrowButton(onUpVoteAction, R.drawable.ic_baseline_arrow_upward_24)
+    Text(text = text,
+      color = Color.Gray,
+      fontWeight = FontWeight.Medium,
+      fontSize = 12.sp
+    )
+    ArrowButton(onUpVoteAction, R.drawable.ic_baseline_arrow_downward_24)
+  }
 }
-
 @Composable
 fun ArrowButton(onClickAction: () -> Unit, arrowResourceId: Int) {
-  //TODO add your code here
+  IconButton(onClick = onClickAction,
+    modifier = Modifier.size(30.dp)
+  ) {
+    Icon(
+      imageVector = ImageVector.vectorResource(arrowResourceId),
+      contentDescription = stringResource(id = R.string.upvote),
+      modifier = Modifier.size(20.dp),
+      tint = Color.Gray
+    )
+  }
 }
-
 @Composable
 fun PostAction(
   @DrawableRes vectorResourceId: Int,
@@ -196,13 +238,11 @@ fun PostAction(
     }
   }
 }
-
 @Preview
 @Composable
 fun ArrowButtonPreview() {
   ArrowButton({}, R.drawable.ic_baseline_arrow_upward_24)
 }
-
 @Preview
 @Composable
 fun HeaderPreview() {
@@ -210,19 +250,16 @@ fun HeaderPreview() {
     Header(DEFAULT_POST)
   }
 }
-
 @Preview
 @Composable
 fun VotingActionPreview() {
   VotingAction("555", {}, {})
 }
-
 @Preview
 @Composable
 fun PostPreview() {
   Post(DEFAULT_POST)
 }
-
 @Preview
 @Composable
 fun TextPostPreview() {
@@ -230,7 +267,6 @@ fun TextPostPreview() {
     TextContent(DEFAULT_POST.text)
   }
 }
-
 @Preview
 @Composable
 fun ImagePostPreview() {
